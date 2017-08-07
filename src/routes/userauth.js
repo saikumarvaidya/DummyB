@@ -31,11 +31,12 @@ function ensureAuthenticated(req, res, next) {
 
 function ensureAuthenticatedUser(req, res, next) {
     if (req.isAuthenticated()) {
-        res.json({'logged in fuck off':'true'});
+        res.json({'logged in fuck off':'true',loggedinuser:req.user});
     } else {
         return next();
     }
 }
+
 passport.use(new LocalStrategy(
     function (username, password, done) {
 
@@ -52,8 +53,6 @@ passport.use(new LocalStrategy(
 passport.serializeUser(function(user, done) {
     done(null, user.user_id);
 });
-
-
 
 passport.deserializeUser(function(id, done) {
     User.getUserByUsername(id, function(err, user) {

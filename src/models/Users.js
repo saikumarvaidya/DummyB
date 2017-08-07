@@ -2,32 +2,36 @@
  * Created by ajayr on 29-07-2017.
  */
 import mongoose, {Schema} from "mongoose"
-
+var bcrypt = require('bcryptjs');
 
 const userSchema = new Schema({
 
-    user_id:Number,
-    user_name:String,
-    user_password:String,
-    user_present_class:String,
-    section_id:String,
-    school_id:String,
-    user_father_name:String,
-    user_mother_name:String,
-    user_father_password:String,
-    user_contact:[String],
-    user_address:{d_no:String,pincode:String,district:String,mandal:String,vill_city:String,state:String},
-    user_dob:Date,
-    user_joined_Date:Date,
-    user_left_Date:Date
+    name:String,
+    email:String,
+    username:String,
+    password:String
 });
 
 // Registering the model
 
-var User = mongoose.model('Users', userSchema);
+var User = mongoose.model('users', userSchema);
+
+//user registration
+module.exports.createNewUser = function(newUser, callback){
+    console.log("newUser",newUser);
+    bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(newUser.password, salt, function(err, hash) {
+            newUser.password = hash;
+            newUser.save().then((err,result)=>{
+                console.log("result",callback(err,result));
+            });
+        });
+    });
+}
+
 
 module.exports.getUserByUsername = function(username, callback){
-    var query = {user_id: username};
+    var query = {username: username};
     User.findOne(query, callback);
 }
 export default User;

@@ -9,7 +9,7 @@ import * as UsersCtrl from "../controllers/UsersController";
 
 router.route("/")
     .get(UsersCtrl.getUsers)
-    .post(UsersCtrl.addUser);
+    .post(UsersCtrl.registerUser);
 
 
 router

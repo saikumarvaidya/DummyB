@@ -2,49 +2,8 @@
  * Created by ajayr on 29-07-2017.
  */
 import Users from '../models/Users'
-
-const users = [
-    {
-        user_id:121212,
-        user_name:'testuser',
-        user_password:'testpassword',
-        user_present_class:'firstclass',
-        section_id:'sa1234',
-        school_id:'sc1234',
-        user_father_name:'testfather',
-        user_mother_name:'testmother',
-        user_father_password:'testfatherpassword',
-        user_contact:['1234567890','12334567810'],
-        user_address:{d_no:'2-21',pincode:'5042001',district:'adilabad',mandal:'jaipur',vill_city:'indaram',state:'telangana'},
-        user_dob:'12-04-1995',
-        user_joined_Date:'12-09-2010',
-        user_left_Date:null,
-        ///////////////////
-    },
-    {
-        /*id: 2,
-        from: 'vsk',
-        to: 'theajr',
-        message: 'Hello...'
-        */
-
-        user_id:121213,
-        user_name:'testuser1',
-        user_password:'testpassword2',
-        user_present_class:'firstclass',
-        section_id:'sa1234',
-        school_id:'sc1234',
-        user_father_name:'testfather1',
-        user_mother_name:'testmother1',
-        user_father_password:'testfatherpassword1',
-        user_contact:['1234567891','12334567812'],
-        user_address:{d_no:'2-22',pincode:'5042001',district:'adilabad',mandal:'jaipur',vill_city:'indaram',state:'telangana'},
-        user_dob:'12-03-1995',
-        user_joined_Date:'12-09-2012',
-        user_left_Date:null,
-    }
-]
-
+import {createNewUser} from "../models/Users"
+//to get all present users
 const getUsers = (req, res, next) => {
     Users.find({}, {},req.query, (error, users) => {
         if (error) console.log(":-) error = ", error);
@@ -54,47 +13,41 @@ const getUsers = (req, res, next) => {
         })
     });
 }
-const addUser = (req, res, next) => {
-    /*const {
-     user_id,
-     user_name,
-     user_password,
-     user_present_class,
-     section_id,
-     school_id,
-     user_father_name,
-     user_mother_name,
-     user_father_password,
-     user_contact,
-     user_address,
-     user_dob,
-     user_joined_Date,
-     user_left_Date} = req.body;
-     const newUser = {
-     user_id,
-     user_name,
-     user_password,
-     user_present_class,
-     section_id,
-     school_id,
-     user_father_name,
-     user_mother_name,
-     user_father_password,
-     user_contact,
-     user_address,
-     user_dob,
-     user_joined_Date,
-     user_left_Date
-     }*/
-    var userObject = new Users(req.body);
-    userObject.save(function (err, newUserSavedFromDB) {
-        if (err) return err;
-        res.json({
-            message: 'New user added successfully',
-            user: newUserSavedFromDB
-        })
-    });
+
+
+// Register User
+const registerUser=(req, res,next)=>{
+console.log("req",req);
+    var name = req.body.name;
+    var email = req.body.email;
+    var username = req.body.username;
+    var password = req.body.password;
+    console.log("req.body",req.body);
+
+
+    var newUser = new Users({
+            name: name,
+            email:email,
+            username: username,
+            password: password
+        });
+
+        createNewUser(newUser, function(result){
+            console.log("err,user---",result);
+            console.log(result);
+        });
+
+        //req.flash('success_msg', 'You are registered and can now login');
+
+    res.json({'created user is below ': true, createduser: req.user});
+
 }
+
+
+
+
+
+
 const getUser = (req, res, next) => {
     let {id} = req.params;
     console.log(":-) id = ", id);
@@ -108,6 +61,8 @@ const getUser = (req, res, next) => {
 
 }
 
+
+
 const updateUser=(req,res,next)=> {
     const {id}=req.params;
     Users.findOneAndUpdate({_id:id},req.body,{new:true},(err,updatedUser)=>{
@@ -118,6 +73,8 @@ const updateUser=(req,res,next)=> {
         })
     });
 }
+
+
 
 const deleteUser=(req,res,next)=>{
     const {id}=req.params;
@@ -132,5 +89,4 @@ const deleteUser=(req,res,next)=>{
 
 
 
-
-export {getUsers,addUser,getUser,updateUser,deleteUser}
+export {getUsers,registerUser,getUser,updateUser,deleteUser}
